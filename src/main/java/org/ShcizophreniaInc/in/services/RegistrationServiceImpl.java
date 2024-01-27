@@ -4,9 +4,11 @@ import org.ShcizophreniaInc.in.data.UserDAO;
 import org.ShcizophreniaInc.in.entities.Admin;
 import org.ShcizophreniaInc.in.entities.User;
 
+import java.util.Optional;
+
 public class RegistrationServiceImpl implements RegistrationService {
     private final UserDAO userDAO;
-    private User activeUser = null;
+    private Optional<User> activeUser = Optional.empty();
 
     public RegistrationServiceImpl(UserDAO userDAO) {
         this.userDAO = userDAO;
@@ -19,13 +21,13 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public void authorizeUser(User user) {
-        activeUser = userDAO.selectUser(user);
-        if (activeUser == null) {
+        activeUser = Optional.ofNullable(userDAO.selectUser(user));
+        if (activeUser.isEmpty()) {
             System.out.println("Such user does not exist!");
             return;
         }
 
-        if (activeUser instanceof Admin) {
+        if (activeUser.get() instanceof Admin) {
             System.out.println("Welcome aboard, captain!");
         } else {
             System.out.println("Welcome to your profile!");
@@ -34,12 +36,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public void logoutUser() {
-        activeUser = null;
+        activeUser = Optional.empty();
         System.out.println("Bye!");
     }
 
     @Override
-    public User getActiveUser() {
+    public Optional<User> getActiveUser() {
         return activeUser;
     }
 }

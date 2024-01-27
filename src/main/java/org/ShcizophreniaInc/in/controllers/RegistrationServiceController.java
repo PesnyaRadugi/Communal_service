@@ -14,7 +14,7 @@ public class RegistrationServiceController {
     }
 
     public void registerUser() {
-        if (registrationService.getActiveUser() != null) {
+        if (registrationService.getActiveUser().isPresent()) {
             System.out.println("Logout from this account in order to create new!");
             logoutUser();
             return;
@@ -34,7 +34,7 @@ public class RegistrationServiceController {
     }
 
     public void authorizeUser() {
-        if (registrationService.getActiveUser() != null) {
+        if (registrationService.getActiveUser().isPresent()) {
             System.out.println("You need to logout from your account to log in another!");
             logoutUser();
             return;
@@ -53,12 +53,12 @@ public class RegistrationServiceController {
     }
 
     public void logoutUser() {
-        if (registrationService.getActiveUser() == null) {
+        if (registrationService.getActiveUser().isEmpty()) {
             System.out.println("No one is logged!");
             return;
         }
 
-        System.out.println("Are you sure ? y/n");
+        System.out.println("Are you sure you want to quit? y/n");
         switch (scanner.nextLine()) {
             case "y": registrationService.logoutUser(); break;
             case "n": System.out.println("Well then, what do you need?"); break;
